@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+venv/
+.resposta_teste.json
+.cinema_app_teste.log
