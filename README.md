@@ -1,6 +1,6 @@
 # Sistema de Venda de Ingressos de Cinema — API REST (MVC)
 
-[![Testes](https://github.com/giovana-oy22/aula3/actions/workflows/testes.yml/badge.svg)](https://github.com/giovana-oy22/aula3/actions/workflows/testes.yml)
+[![Testes](https://github.com/karolinabarreto/aula3/actions/workflows/testes.yml/badge.svg)](https://github.com/karolinabarreto/aula3/actions/workflows/testes.yml)
 
 ## Equipe
 - Alexandre Harboe Azevedo (NUSP 15436950)
