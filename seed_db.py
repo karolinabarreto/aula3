@@ -17,10 +17,15 @@ from models import init_db, Filme, Sala, Sessao, TipoIngresso
 def seed():
     init_db()
 
+    # filmes em cartaz em setembro de 2026 (datas de estreia no Brasil).
+    # Os cartazes ficam em static/cartazes/ (veja o README).
     filmes_exemplo = [
-        {"nome": "Duna: Parte 2", "data_estreia": "01/03/2024", "data_saida": "01/06/2024", "duracao": 166},
-        {"nome": "Divertida Mente 2", "data_estreia": "13/06/2024", "data_saida": "13/09/2024", "duracao": 100},
-        {"nome": "Coringa: Delirio a Dois", "data_estreia": "03/10/2024", "data_saida": "03/01/2025", "duracao": 138},
+        {"nome": "Vingadores: Ultimato Encore", "data_estreia": "24/09/2026", "data_saida": "22/10/2026",
+         "duracao": 181, "cartaz": "/static/cartazes/vingadores-ultimato-encore.jpg"},
+        {"nome": "Homem-Aranha: Um Novo Dia", "data_estreia": "29/07/2026", "data_saida": "15/10/2026",
+         "duracao": 150, "cartaz": "/static/cartazes/homem-aranha-um-novo-dia.jpg"},
+        {"nome": "Minha Melhor Amiga", "data_estreia": "03/09/2026", "data_saida": "08/10/2026",
+         "duracao": 100, "cartaz": "/static/cartazes/minha-melhor-amiga.jpg"},
     ]
     filmes_criados = []
     for dados in filmes_exemplo:
@@ -46,15 +51,16 @@ def seed():
             TipoIngresso.cadastrar(dados)
 
     if len(filmes_criados) >= 3 and len(salas_criadas) >= 3:
+        f, sl = filmes_criados, salas_criadas
         sessoes_exemplo = [
-            {"sala_id": salas_criadas[0].id, "filme_id": filmes_criados[0].id, "data": "20/03/2024", "hora_inicio": 20},
-            {"sala_id": salas_criadas[1].id, "filme_id": filmes_criados[1].id, "data": "20/06/2024", "hora_inicio": 18},
-            {"sala_id": salas_criadas[2].id, "filme_id": filmes_criados[2].id, "data": "05/10/2024", "hora_inicio": 21},
+            # (sala, filme, data, hora)
+            (sl[1], f[0], "24/09/2026", 19), (sl[1], f[0], "25/09/2026", 21),
+            (sl[2], f[1], "24/09/2026", 21), (sl[2], f[1], "25/09/2026", 18),
+            (sl[0], f[2], "24/09/2026", 16), (sl[0], f[2], "26/09/2026", 15),
         ]
-        for dados in sessoes_exemplo:
-            erro = Sessao.validar(dados)
-            ja_existe = Sessao.existe_conflito(dados["sala_id"], dados["data"], dados["hora_inicio"])
-            if erro is None and not ja_existe:
+        for sala, filme, data, hora in sessoes_exemplo:
+            dados = {"sala_id": sala.id, "filme_id": filme.id, "data": data, "hora_inicio": hora}
+            if Sessao.validar(dados) is None and not Sessao.existe_conflito(sala.id, data, hora):
                 Sessao.cadastrar(dados)
 
     print("Banco de dados populado com sucesso (cinema.db).")

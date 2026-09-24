@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cinema - Programação</title>
+<style>
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #1f3b3a; color: #f3e3b5; }
+  header { background: #b8323b; text-align: center; padding: 20px; }
+  header h1 { margin: 0; font-size: 40px; }
+  main { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; }
+  h2 { color: #ffd166; margin-top: 36px; }
+  .filmes { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
+  .filme img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 4px; background: #152a29; }
+  .filme h3 { margin: 8px 0 4px; font-size: 17px; }
+  .filme p { margin: 0; font-size: 14px; color: #9fbcb8; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid #36605d; }
+  th { color: #9fbcb8; }
+  .erro { background: #4a1a1e; padding: 12px; }
+</style>
+</head>
+<body>
+<header><h1>Cinema</h1><p>Filmes em cartaz, sessões, salas e ingressos</p></header>
+<main>
+  <div id="erro"></div>
+
+  <h2>Filmes em cartaz</h2>
+  <div class="filmes" id="filmes">Carregando...</div>
+
+  <h2>Sessões</h2>
+  <table>
+    <thead><tr><th>Data</th><th>Hora</th><th>Filme</th><th>Sala</th><th>Lugares livres</th><th>Preço</th></tr></thead>
+    <tbody id="sessoes"></tbody>
+  </table>
+
+  <h2>Salas</h2>
+  <table>
+    <thead><tr><th>Número</th><th>Tipo</th><th>Capacidade</th></tr></thead>
+    <tbody id="salas"></tbody>
+  </table>
+
+  <h2>Tipos de ingresso</h2>
+  <table>
+    <thead><tr><th>Tipo</th><th>Valor</th></tr></thead>
+    <tbody id="ingressos"></tbody>
+  </table>
+</main>
+
+<script>
+  // Todos os dados sao buscados na API REST.
+  const SEM_CARTAZ = "/static/cartazes/sem-cartaz.svg";
+
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, c =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  const real = v => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const paraData = s => { const [d, m, a] = s.split("/"); return new Date(a, m - 1, d); };
+
+  async function buscar(url) {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(url + " respondeu " + resp.status);
+    return resp.json();
+  }
+
+  async function carregar() {
+    try {
+      const [filmes, salas, sessoes, tipos] = await Promise.all([
+        buscar("/api/filmes"), buscar("/api/salas"), buscar("/api/sessoes"), buscar("/api/tipos-ingresso"),
+      ]);
+
+      document.getElementById("filmes").innerHTML = filmes.map(f => `
+        <div class="filme">
+          <img src="${esc(f.cartaz || SEM_CARTAZ)}" alt="Cartaz de ${esc(f.nome)}"
+               onerror="this.onerror=null; this.src='${SEM_CARTAZ}'">
+          <h3>${esc(f.nome)}</h3>
+          <p>${esc(f.duracao)} min | ${esc(f.data_estreia)} a ${esc(f.data_saida)}</p>
+        </div>`).join("") || "Nenhum filme cadastrado.";
+
+      sessoes.sort((a, b) => paraData(a.data) - paraData(b.data) || a.hora_inicio - b.hora_inicio);
+      document.getElementById("sessoes").innerHTML = sessoes.map(s => {
+        const filme = filmes.find(f => f.id === s.filme_id);
+        const sala = salas.find(x => x.id === s.sala_id);
+        const tipo = sala && tipos.find(t => t.tipo === sala.tipo);
+        const livres = s.assentos.filter(a => a === 0).length;
+        return `<tr>
+          <td>${esc(s.data)}</td>
+          <td>${esc(s.hora_inicio)}h</td>
+          <td>${esc(filme ? filme.nome : "-")}</td>
+          <td>${sala ? `${esc(sala.numero)} (${esc(sala.tipo)})` : "-"}</td>
+          <td>${livres} de ${s.assentos.length}</td>
+          <td>${tipo ? real(tipo.valor_ingresso) : "-"}</td>
+        </tr>`;
+      }).join("");
+
+      document.getElementById("salas").innerHTML = salas.map(s =>
+        `<tr><td>${esc(s.numero)}</td><td>${esc(s.tipo)}</td><td>${esc(s.capacidade)}</td></tr>`).join("");
+
+      document.getElementById("ingressos").innerHTML = tipos.map(t =>
+        `<tr><td>${esc(t.tipo)}</td><td>${real(t.valor_ingresso)}</td></tr>`).join("");
+    } catch (e) {
+      document.getElementById("erro").innerHTML =
+        `<p class="erro">Erro ao carregar dados da API: ${esc(e.message)}</p>`;
+    }
+  }
+
+  carregar();
+</script>
+</body>
+</html>

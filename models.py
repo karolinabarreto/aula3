@@ -7,7 +7,9 @@ import datetime
 # o problema classico de rodar o comando de outro lugar e a aplicacao
 # criar um cinema.db novo e vazio ali, em vez de usar o que ja existe.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_NAME = os.path.join(BASE_DIR, "cinema.db")
+# Pode ser trocado pela variavel de ambiente CINEMA_DB (usado nos testes
+# automatizados, que rodam em um banco temporario separado).
+DB_NAME = os.environ.get("CINEMA_DB", os.path.join(BASE_DIR, "cinema.db"))
 
 
 def get_conn():
@@ -23,7 +25,8 @@ def init_db():
         nome TEXT NOT NULL,
         data_estreia TEXT NOT NULL,
         data_saida TEXT NOT NULL,
-        duracao INTEGER NOT NULL
+        duracao INTEGER NOT NULL,
+        cartaz TEXT NOT NULL DEFAULT ''
     )""")
     conn.execute("""CREATE TABLE IF NOT EXISTS salas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,6 +47,11 @@ def init_db():
         tipo TEXT NOT NULL,
         valor_ingresso REAL NOT NULL
     )""")
+    # migracao: bancos criados na versao anterior nao tinham a coluna
+    # "cartaz" (imagem do filme). Se faltar, adiciona sem apagar nada.
+    colunas = [c["name"] for c in conn.execute("PRAGMA table_info(filmes)").fetchall()]
+    if "cartaz" not in colunas:
+        conn.execute("ALTER TABLE filmes ADD COLUMN cartaz TEXT NOT NULL DEFAULT ''")
     conn.commit()
     conn.close()
 
@@ -59,16 +67,18 @@ def _data_valida(data_str):
 
 # ==================== FILME ====================
 # Mesmos atributos do cinema.py original: nome, data_estreia, data_saida,
-# duracao (+ "id", que faz o papel do antigo "codigo").
+# duracao (+ "id", que faz o papel do antigo "codigo") e agora "cartaz":
+# URL (ou caminho em /static) da imagem do cartaz, exibida no site.
 
 class Filme:
 
-    def __init__(self, id=None, nome=None, data_estreia=None, data_saida=None, duracao=None):
+    def __init__(self, id=None, nome=None, data_estreia=None, data_saida=None, duracao=None, cartaz=""):
         self.id = id
         self.nome = nome
         self.data_estreia = data_estreia
         self.data_saida = data_saida
         self.duracao = duracao
+        self.cartaz = cartaz or ""
 
     def to_dict(self):
         return {
@@ -77,13 +87,15 @@ class Filme:
             "data_estreia": self.data_estreia,
             "data_saida": self.data_saida,
             "duracao": self.duracao,
+            "cartaz": self.cartaz,
         }
 
     @staticmethod
     def _from_row(row):
         if row is None:
             return None
-        return Filme(row["id"], row["nome"], row["data_estreia"], row["data_saida"], row["duracao"])
+        return Filme(row["id"], row["nome"], row["data_estreia"], row["data_saida"], row["duracao"],
+                     row["cartaz"])
 
     # mesmas regras da funcao cadastrar_filme do cinema.py original
     @staticmethod
@@ -102,14 +114,19 @@ class Filme:
         if dt_estreia > dt_saida:
             return "Data de estreia nao pode ser posterior a data de saida."
 
+        cartaz = dados.get("cartaz", "")
+        if cartaz is not None and not isinstance(cartaz, str):
+            return "Cartaz deve ser um texto (URL ou caminho da imagem)."
+
         return None
 
     @staticmethod
     def cadastrar(dados):
         conn = get_conn()
         cur = conn.execute(
-            "INSERT INTO filmes (nome, data_estreia, data_saida, duracao) VALUES (?, ?, ?, ?)",
-            (dados["nome"], dados["data_estreia"], dados["data_saida"], dados["duracao"]),
+            "INSERT INTO filmes (nome, data_estreia, data_saida, duracao, cartaz) VALUES (?, ?, ?, ?, ?)",
+            (dados["nome"], dados["data_estreia"], dados["data_saida"], dados["duracao"],
+             dados.get("cartaz") or ""),
         )
         conn.commit()
         conn.close()
@@ -134,11 +151,12 @@ class Filme:
         self.data_estreia = dados.get("data_estreia", self.data_estreia)
         self.data_saida = dados.get("data_saida", self.data_saida)
         self.duracao = dados.get("duracao", self.duracao)
+        self.cartaz = dados.get("cartaz", self.cartaz) or ""
 
         conn = get_conn()
         conn.execute(
-            "UPDATE filmes SET nome=?, data_estreia=?, data_saida=?, duracao=? WHERE id=?",
-            (self.nome, self.data_estreia, self.data_saida, self.duracao, self.id),
+            "UPDATE filmes SET nome=?, data_estreia=?, data_saida=?, duracao=?, cartaz=? WHERE id=?",
+            (self.nome, self.data_estreia, self.data_saida, self.duracao, self.cartaz, self.id),
         )
         conn.commit()
         conn.close()

@@ -1,5 +1,7 @@
 # Sistema de Venda de Ingressos de Cinema — API REST (MVC)
 
+[![Testes](https://github.com/giovana-oy22/aula3/actions/workflows/testes.yml/badge.svg)](https://github.com/giovana-oy22/aula3/actions/workflows/testes.yml)
+
 ## Equipe
 - Alexandre Harboe Azevedo (NUSP 15436950)
 - Felipe Dutra Bernardo (NUSP 15451280)
@@ -15,14 +17,30 @@ salvos em **banco de dados** (SQLite).
 Permite **cadastrar, listar, editar e remover** filmes, salas, sessões e
 tipos de ingresso, mantendo os mesmos atributos do exercício anterior.
 
+### Novidades desta versão
+
+- Página web em `http://127.0.0.1:5000/` que exibe os filmes em cartaz
+  (com cartaz), as sessões, as salas e os tipos de ingresso. Os dados são
+  buscados pela API REST (`fetch` em `/api/...`).
+- Novo campo `cartaz` no filme (caminho ou URL da imagem).
+- 25 testes automatizados com pytest, rodando no GitHub Actions a cada commit.
+
 ## Arquitetura (MVC)
 
 ```
-cinema_app/
-├── app.py           # cria a app Flask, inicializa o banco e registra as rotas
-├── controllers.py   # Controller: rotas da API REST, validam entrada e chamam o model
-├── models.py        # Model: conexão com o banco (SQLite) e funções de CRUD
-├── requirements.txt
+aula3/
+├── app.py                  # create_app(): cria a app Flask, inicializa o banco e registra as rotas
+├── controllers.py          # Controller: rotas da API REST, validam entrada e chamam o model
+├── models.py               # Model: conexão com o banco (SQLite) e funções de CRUD
+├── seed_db.py              # popula o banco com dados de exemplo
+├── static/
+│   ├── index.html          # View: site do cinema (consome a API REST)
+│   ├── cartazes/           # imagens dos cartazes
+│   └── openapi.json        # especificação da API (Swagger)
+├── tests/test_api.py       # testes automatizados (pytest)
+├── .github/workflows/testes.yml   # CI: roda os testes a cada push
+├── requirements.txt        # dependências da aplicação
+├── requirements-dev.txt    # dependências dos testes
 └── README.md
 ```
 
@@ -33,12 +51,15 @@ cinema_app/
   `remover`) e persiste no SQLite em vez de listas em memória.
 - **Controller** (`controllers.py`): rotas Flask que recebem a requisição,
   validam os dados e chamam os métodos das classes do model.
-- **View**: como é uma API REST, a "view" é a própria resposta em JSON.
+- **View**: a página `static/index.html`, servida em `/`, que busca os
+  dados pela API REST e monta a tela no navegador. As respostas JSON da
+  API também funcionam como view para outros clientes.
 
 ## Requisitos
 
-- Python 3.9+
+- Python 3.10+
 - pip
+- Um navegador moderno (para o site)
 
 O banco (`cinema.db`, SQLite) é criado automaticamente na primeira
 execução — não é preciso instalar nenhum SGBD separado.
@@ -47,7 +68,7 @@ execução — não é preciso instalar nenhum SGBD separado.
 
 ```bash
 git clone <URL_DO_REPOSITORIO>
-cd cinema_app
+cd aula4
 
 python3 -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\activate
@@ -56,7 +77,28 @@ pip install -r requirements.txt
 python3 app.py
 ```
 
-A API sobe em `http://127.0.0.1:5000`.
+- Site do cinema: `http://127.0.0.1:5000/`
+- Raiz da API (lista de endpoints): `http://127.0.0.1:5000/api`
+- Documentação Swagger: `http://127.0.0.1:5000/docs`
+
+## Cartazes
+
+Os filmes de exemplo são filmes em cartaz em setembro de 2026. As imagens
+ficam em `static/cartazes/` com o nome indicado no `seed_db.py` (ex.:
+`homem-aranha-um-novo-dia.jpg`). Se a imagem não existir, a página mostra uma imagem
+padrão. Também é possível cadastrar o `cartaz` como uma URL completa.
+
+## Testes automatizados
+
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+pytest -v
+```
+
+Os testes (`tests/test_api.py`) chamam os endpoints de CRUD de filmes,
+salas, sessões e tipos de ingresso usando um banco temporário. O workflow
+`.github/workflows/testes.yml` roda os testes a cada `push` e o resultado
+aparece no badge no topo deste README.
 
 ## Documentação (Swagger)
 
@@ -71,8 +113,8 @@ O arquivo com a especificação (OpenAPI 3.0) fica em
 ## Banco de dados já populado / persistência
 
 O banco (`cinema.db`) é criado automaticamente na primeira execução — mas
-esse zip já vem com um `cinema.db` **pronto e populado** (3 filmes, 3
-salas, 2 tipos de ingresso e 3 sessões de exemplo), então você já pode
+o repositório já vem com um `cinema.db` **pronto e populado** (3 filmes com
+cartaz, 3 salas, 2 tipos de ingresso e 6 sessões de exemplo), então você já pode
 testar a API sem precisar cadastrar nada manualmente primeiro.
 
 **Se o `cinema.db` já existir na pasta, a aplicação reaproveita ele** —
@@ -88,14 +130,10 @@ python3 seed_db.py
 Para começar do zero (banco vazio): apague o arquivo `cinema.db` e rode
 `python3 app.py` de novo — ele recria as tabelas vazias automaticamente.
 
-> Por padrão o `cinema.db` fica fora do controle de versão (`.gitignore`),
-> como é comum para arquivos de banco de dados. Se quiser versionar o
-> banco de exemplo junto com o código, é só remover a linha `cinema.db`
-> do `.gitignore` antes de subir pro repositório.
 
-## Testando tudo de uma vez
+## Teste manual rápido (script)
 
-O arquivo `testar_api.sh` cadastra dados de teste e verifica todas as
+Além dos testes automatizados, o arquivo `testar_api.sh` cadastra dados de teste e verifica todas as
 validações (sucesso, erro 400, 404 e 409) de uma vez. Se o servidor não
 estiver rodando, ele sobe a aplicação sozinho.
 
@@ -119,9 +157,10 @@ Base: `http://127.0.0.1:5000`
 
 ### Corpo esperado (JSON)
 
-**Filme**
+**Filme** (`cartaz` é opcional)
 ```json
-{"nome": "Duna: Parte 2", "data_estreia": "01/03/2024", "data_saida": "01/06/2024", "duracao": 166}
+{"nome": "Duna: Parte 2", "data_estreia": "01/03/2024", "data_saida": "01/06/2024", "duracao": 166,
+ "cartaz": "/static/cartazes/duna-parte-2.svg"}
 ```
 
 **Sala**
@@ -154,7 +193,7 @@ curl http://127.0.0.1:5000/api/filmes
 
 ## Validações
 
-- **Filme**: nome obrigatório; datas no formato `dd/mm/aaaa`; estreia não
+- **Filme**: nome obrigatório; `cartaz`, se enviado, deve ser texto; datas no formato `dd/mm/aaaa`; estreia não
   pode ser depois da saída; duração inteira e positiva.
 - **Sala**: número e capacidade inteiros positivos; tipo `2D` ou `3D`.
 - **Sessão**: sala e filme precisam existir; data válida; hora entre 0 e

@@ -6,243 +6,783 @@
     "version": "1.0.0"
   },
   "servers": [
-    { "url": "http://127.0.0.1:5000", "description": "Servidor local" }
+    {
+      "url": "http://127.0.0.1:5000",
+      "description": "Servidor local"
+    }
   ],
   "tags": [
-    { "name": "Filmes" },
-    { "name": "Salas" },
-    { "name": "Sessões" },
-    { "name": "Tipos de ingresso" }
+    {
+      "name": "Filmes"
+    },
+    {
+      "name": "Salas"
+    },
+    {
+      "name": "Sessões"
+    },
+    {
+      "name": "Tipos de ingresso"
+    }
   ],
   "paths": {
     "/api/filmes": {
       "get": {
-        "tags": ["Filmes"],
+        "tags": [
+          "Filmes"
+        ],
         "summary": "Listar todos os filmes",
         "responses": {
           "200": {
             "description": "Lista de filmes",
-            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Filme" } } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Filme"
+                  }
+                }
+              }
+            }
           }
         }
       },
       "post": {
-        "tags": ["Filmes"],
+        "tags": [
+          "Filmes"
+        ],
         "summary": "Cadastrar um filme",
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FilmeEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilmeEntrada"
+              }
+            }
+          }
         },
         "responses": {
           "201": {
             "description": "Filme criado",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Filme" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Filme"
+                }
+              }
+            }
           },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/api/filmes/{id}": {
       "get": {
-        "tags": ["Filmes"],
+        "tags": [
+          "Filmes"
+        ],
         "summary": "Buscar um filme pelo id",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Filme encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Filme" } } } },
-          "404": { "description": "Filme não encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Filme encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Filme"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "put": {
-        "tags": ["Filmes"],
+        "tags": [
+          "Filmes"
+        ],
         "summary": "Editar um filme",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FilmeEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilmeEntrada"
+              }
+            }
+          }
         },
         "responses": {
-          "200": { "description": "Filme atualizado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Filme" } } } },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } },
-          "404": { "description": "Filme não encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Filme atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Filme"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
-        "tags": ["Filmes"],
+        "tags": [
+          "Filmes"
+        ],
         "summary": "Remover um filme",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Filme removido", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Mensagem" } } } },
-          "404": { "description": "Filme não encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Filme removido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mensagem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/api/salas": {
       "get": {
-        "tags": ["Salas"],
+        "tags": [
+          "Salas"
+        ],
         "summary": "Listar todas as salas",
         "responses": {
-          "200": { "description": "Lista de salas", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Sala" } } } } }
+          "200": {
+            "description": "Lista de salas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sala"
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "post": {
-        "tags": ["Salas"],
+        "tags": [
+          "Salas"
+        ],
         "summary": "Cadastrar uma sala",
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SalaEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SalaEntrada"
+              }
+            }
+          }
         },
         "responses": {
-          "201": { "description": "Sala criada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sala" } } } },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "201": {
+            "description": "Sala criada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sala"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/api/salas/{id}": {
       "get": {
-        "tags": ["Salas"],
+        "tags": [
+          "Salas"
+        ],
         "summary": "Buscar uma sala pelo id",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Sala encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sala" } } } },
-          "404": { "description": "Sala não encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Sala encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sala"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sala não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "put": {
-        "tags": ["Salas"],
+        "tags": [
+          "Salas"
+        ],
         "summary": "Editar uma sala",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SalaEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SalaEntrada"
+              }
+            }
+          }
         },
         "responses": {
-          "200": { "description": "Sala atualizada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sala" } } } },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } },
-          "404": { "description": "Sala não encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Sala atualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sala"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sala não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
-        "tags": ["Salas"],
+        "tags": [
+          "Salas"
+        ],
         "summary": "Remover uma sala",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Sala removida", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Mensagem" } } } },
-          "404": { "description": "Sala não encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Sala removida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mensagem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sala não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/api/sessoes": {
       "get": {
-        "tags": ["Sessões"],
+        "tags": [
+          "Sessões"
+        ],
         "summary": "Listar sessões",
         "parameters": [
-          { "name": "data", "in": "query", "required": false, "description": "Filtrar por data (dd/mm/aaaa)", "schema": { "type": "string", "example": "10/03/2024" } }
+          {
+            "name": "data",
+            "in": "query",
+            "required": false,
+            "description": "Filtrar por data (dd/mm/aaaa)",
+            "schema": {
+              "type": "string",
+              "example": "10/03/2024"
+            }
+          }
         ],
         "responses": {
-          "200": { "description": "Lista de sessões", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Sessao" } } } } }
+          "200": {
+            "description": "Lista de sessões",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sessao"
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "post": {
-        "tags": ["Sessões"],
+        "tags": [
+          "Sessões"
+        ],
         "summary": "Cadastrar uma sessão",
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SessaoEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessaoEntrada"
+              }
+            }
+          }
         },
         "responses": {
-          "201": { "description": "Sessão criada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sessao" } } } },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } },
-          "409": { "description": "Já existe sessão nessa sala/data/horário", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "201": {
+            "description": "Sessão criada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sessao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Já existe sessão nessa sala/data/horário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/api/sessoes/{id}": {
       "get": {
-        "tags": ["Sessões"],
+        "tags": [
+          "Sessões"
+        ],
         "summary": "Buscar uma sessão pelo id",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Sessão encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sessao" } } } },
-          "404": { "description": "Sessão não encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Sessão encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sessao"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sessão não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "put": {
-        "tags": ["Sessões"],
+        "tags": [
+          "Sessões"
+        ],
         "summary": "Editar uma sessão",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SessaoEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessaoEntrada"
+              }
+            }
+          }
         },
         "responses": {
-          "200": { "description": "Sessão atualizada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sessao" } } } },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } },
-          "404": { "description": "Sessão não encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } },
-          "409": { "description": "Já existe sessão nessa sala/data/horário", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Sessão atualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sessao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sessão não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Já existe sessão nessa sala/data/horário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
-        "tags": ["Sessões"],
+        "tags": [
+          "Sessões"
+        ],
         "summary": "Remover uma sessão",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Sessão removida", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Mensagem" } } } },
-          "404": { "description": "Sessão não encontrada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Sessão removida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mensagem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sessão não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/api/tipos-ingresso": {
       "get": {
-        "tags": ["Tipos de ingresso"],
+        "tags": [
+          "Tipos de ingresso"
+        ],
         "summary": "Listar tipos de ingresso",
         "responses": {
-          "200": { "description": "Lista de tipos de ingresso", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/TipoIngresso" } } } } }
+          "200": {
+            "description": "Lista de tipos de ingresso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoIngresso"
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "post": {
-        "tags": ["Tipos de ingresso"],
+        "tags": [
+          "Tipos de ingresso"
+        ],
         "summary": "Cadastrar valor de ingresso por tipo",
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TipoIngressoEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoIngressoEntrada"
+              }
+            }
+          }
         },
         "responses": {
-          "201": { "description": "Tipo de ingresso criado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TipoIngresso" } } } },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "201": {
+            "description": "Tipo de ingresso criado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoIngresso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/api/tipos-ingresso/{id}": {
       "get": {
-        "tags": ["Tipos de ingresso"],
+        "tags": [
+          "Tipos de ingresso"
+        ],
         "summary": "Buscar um tipo de ingresso pelo id",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Tipo de ingresso encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TipoIngresso" } } } },
-          "404": { "description": "Tipo de ingresso não encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Tipo de ingresso encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoIngresso"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tipo de ingresso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "put": {
-        "tags": ["Tipos de ingresso"],
+        "tags": [
+          "Tipos de ingresso"
+        ],
         "summary": "Editar um tipo de ingresso",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TipoIngressoEntrada" } } }
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoIngressoEntrada"
+              }
+            }
+          }
         },
         "responses": {
-          "200": { "description": "Tipo de ingresso atualizado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TipoIngresso" } } } },
-          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } },
-          "404": { "description": "Tipo de ingresso não encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Tipo de ingresso atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoIngresso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tipo de ingresso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
-        "tags": ["Tipos de ingresso"],
+        "tags": [
+          "Tipos de ingresso"
+        ],
         "summary": "Remover um tipo de ingresso",
-        "parameters": [ { "$ref": "#/components/parameters/Id" } ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
         "responses": {
-          "200": { "description": "Tipo de ingresso removido", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Mensagem" } } } },
-          "404": { "description": "Tipo de ingresso não encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Erro" } } } }
+          "200": {
+            "description": "Tipo de ingresso removido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mensagem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tipo de ingresso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -253,86 +793,223 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "schema": { "type": "integer" }
+        "schema": {
+          "type": "integer"
+        }
       }
     },
     "schemas": {
       "FilmeEntrada": {
         "type": "object",
-        "required": ["nome", "data_estreia", "data_saida", "duracao"],
+        "required": [
+          "nome",
+          "data_estreia",
+          "data_saida",
+          "duracao"
+        ],
         "properties": {
-          "nome": { "type": "string", "example": "Duna: Parte 2" },
-          "data_estreia": { "type": "string", "example": "01/03/2024", "description": "Formato dd/mm/aaaa" },
-          "data_saida": { "type": "string", "example": "01/06/2024", "description": "Formato dd/mm/aaaa" },
-          "duracao": { "type": "integer", "example": 166, "description": "Duração em minutos" }
+          "nome": {
+            "type": "string",
+            "example": "Duna: Parte 2"
+          },
+          "data_estreia": {
+            "type": "string",
+            "example": "01/03/2024",
+            "description": "Formato dd/mm/aaaa"
+          },
+          "data_saida": {
+            "type": "string",
+            "example": "01/06/2024",
+            "description": "Formato dd/mm/aaaa"
+          },
+          "duracao": {
+            "type": "integer",
+            "example": 166,
+            "description": "Duração em minutos"
+          },
+          "cartaz": {
+            "type": "string",
+            "example": "/static/cartazes/duna-parte-2.svg",
+            "description": "Opcional. URL (http/https) ou caminho em /static da imagem do cartaz, exibida no site."
+          }
         }
       },
       "Filme": {
         "allOf": [
-          { "type": "object", "properties": { "id": { "type": "integer", "example": 1 } } },
-          { "$ref": "#/components/schemas/FilmeEntrada" }
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/FilmeEntrada"
+          }
         ]
       },
       "SalaEntrada": {
         "type": "object",
-        "required": ["numero", "capacidade", "tipo"],
+        "required": [
+          "numero",
+          "capacidade",
+          "tipo"
+        ],
         "properties": {
-          "numero": { "type": "integer", "example": 1 },
-          "capacidade": { "type": "integer", "example": 50 },
-          "tipo": { "type": "string", "enum": ["2D", "3D"], "example": "2D" }
+          "numero": {
+            "type": "integer",
+            "example": 1
+          },
+          "capacidade": {
+            "type": "integer",
+            "example": 50
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "2D",
+              "3D"
+            ],
+            "example": "2D"
+          }
         }
       },
       "Sala": {
         "allOf": [
-          { "type": "object", "properties": { "id": { "type": "integer", "example": 1 } } },
-          { "$ref": "#/components/schemas/SalaEntrada" }
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/SalaEntrada"
+          }
         ]
       },
       "SessaoEntrada": {
         "type": "object",
-        "required": ["sala_id", "filme_id", "data", "hora_inicio"],
+        "required": [
+          "sala_id",
+          "filme_id",
+          "data",
+          "hora_inicio"
+        ],
         "properties": {
-          "sala_id": { "type": "integer", "example": 1 },
-          "filme_id": { "type": "integer", "example": 1 },
-          "data": { "type": "string", "example": "10/03/2024", "description": "Formato dd/mm/aaaa" },
-          "hora_inicio": { "type": "integer", "example": 20, "description": "Hora de 0 a 23" }
+          "sala_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "filme_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "data": {
+            "type": "string",
+            "example": "10/03/2024",
+            "description": "Formato dd/mm/aaaa"
+          },
+          "hora_inicio": {
+            "type": "integer",
+            "example": 20,
+            "description": "Hora de 0 a 23"
+          }
         }
       },
       "Sessao": {
         "allOf": [
-          { "type": "object", "properties": {
-            "id": { "type": "integer", "example": 1 },
-            "assentos": {
-              "type": "array",
-              "items": { "type": "integer", "enum": [0, 1] },
-              "description": "Lista com um item por lugar da sala (0 = livre, 1 = ocupado), gerada automaticamente no cadastro com base na capacidade da sala.",
-              "example": [0, 0, 0, 0, 0]
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "assentos": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "enum": [
+                    0,
+                    1
+                  ]
+                },
+                "description": "Lista com um item por lugar da sala (0 = livre, 1 = ocupado), gerada automaticamente no cadastro com base na capacidade da sala.",
+                "example": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
             }
-          } },
-          { "$ref": "#/components/schemas/SessaoEntrada" }
+          },
+          {
+            "$ref": "#/components/schemas/SessaoEntrada"
+          }
         ]
       },
       "TipoIngressoEntrada": {
         "type": "object",
-        "required": ["tipo", "valor_ingresso"],
+        "required": [
+          "tipo",
+          "valor_ingresso"
+        ],
         "properties": {
-          "tipo": { "type": "string", "enum": ["2D", "3D"], "example": "2D" },
-          "valor_ingresso": { "type": "number", "format": "float", "example": 30.0 }
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "2D",
+              "3D"
+            ],
+            "example": "2D"
+          },
+          "valor_ingresso": {
+            "type": "number",
+            "format": "float",
+            "example": 30.0
+          }
         }
       },
       "TipoIngresso": {
         "allOf": [
-          { "type": "object", "properties": { "id": { "type": "integer", "example": 1 } } },
-          { "$ref": "#/components/schemas/TipoIngressoEntrada" }
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/TipoIngressoEntrada"
+          }
         ]
       },
       "Mensagem": {
         "type": "object",
-        "properties": { "mensagem": { "type": "string", "example": "Filme removido com sucesso." } }
+        "properties": {
+          "mensagem": {
+            "type": "string",
+            "example": "Filme removido com sucesso."
+          }
+        }
       },
       "Erro": {
         "type": "object",
-        "properties": { "erro": { "type": "string", "example": "Dados invalidos." } }
+        "properties": {
+          "erro": {
+            "type": "string",
+            "example": "Dados invalidos."
+          }
+        }
       }
     }
   }
